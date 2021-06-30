@@ -8,31 +8,31 @@ using System.Threading.Tasks;
 
 namespace TenmoServer.DAO
 {
-    public class AccountsDao : IAccountsDao
+    public class AccountsSqlDao : IAccountsDao
     {
         private readonly string connectionString;
 
-        public AccountsDao(string dbConnectionString)
+        public AccountsSqlDao(string dbConnectionString)
         {
             connectionString = dbConnectionString; 
         }
 
         public decimal GetBalance(int userId)
         {
-            decimal balance = 0M;
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
-                    SqlCommand cmd = new SqlCommand("SELECT user_id, balance FROM accounts WHERE user_id = @user_id;", conn);
+                    SqlCommand cmd = new SqlCommand("SELECT account_id, user_id, balance FROM accounts WHERE user_id = @user_id;", conn);
                     cmd.Parameters.AddWithValue("@user_id", userId);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        return Convert.ToDecimal(reader["balance"]);
+                        Account account = GetAccount(reader);
+                        return account.Balance;
                     }
                 }
             }
@@ -41,9 +41,19 @@ namespace TenmoServer.DAO
                 throw;
             }
 
-            return
+            return 0M;
         }
 
-        private
+        private Account GetAccount(SqlDataReader reader)
+        {
+            Account account = new Account()
+            {
+                AccountId = Convert.ToInt32(reader["account_id"]),
+                UserId = Convert.ToInt32(reader["user_id"]),
+                Balance = Convert.ToDecimal(reader["decimal"]),
+            };
+
+            return account;
+        }
     }
 }
