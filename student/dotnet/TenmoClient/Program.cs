@@ -87,7 +87,7 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    Console.WriteLine();
+                    UserService.GetUserId();
                 }
                 else if (menuSelection == 2)
                 {
