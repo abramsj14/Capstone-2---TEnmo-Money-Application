@@ -31,8 +31,7 @@ namespace TenmoServer.DAO
 
                     if (reader.Read())
                     {
-                        Account account = GetAccount(reader);
-                        return account.Balance;
+                        return Convert.ToDecimal(reader["balance"]);
                     }
                 }
             }
