@@ -4,46 +4,58 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TenmoServer.DAO;
+using TenmoServer.Models;
 
 namespace TenmoServer.Controllers
 {
-    public class TransferController
+    [Route("transfers/")]
+    [ApiController]
+    [Authorize]
+    public class TransferController : ControllerBase
     {
-        [Route("transfers/")]
-        [ApiController]
-        [Authorize]
-        public class TransferController : ControllerBase
+        private static ITransferDao transferDao;
+        public TransferController(ITransferDao _transferDao)
         {
-            private static ITransferDao transferDao;
-            public TransferController(ITransferDao _transferDao)
+            transferDao = _transferDao;
+        }
+
+        [HttpPost("send")]
+        public ActionResult<Transfer> NewSendTransfer(string toUser, decimal amount)
+        {
+            //CREATE SEND             From_User           to_user amount  send_id
+            transferDao.StoreTransfer(User.Identity.Name, toUser, amount, 1);
+        }
+
+        [HttpPost("request")]
+        public ActionResult<Transfer> NewRequestTransfer(string fromUser, decimal amount)
+        {
+            //CREATE SEND             From_User           to_user amount  send_id
+            transferDao.StoreTransfer(fromUser, User.Identity.Name, amount, 2);
+        }
+
+        [HttpGet]
+        public ActionResult<Transfer> GetTransferByUserId(int userId)
+        {
+            Transfer transfer = transferDao.GetTransfers(userId);
+            if (transfer != null)
             {
-                transferDao = _transferDao;
+                return transfer;
             }
-            [HttpGet]
-            public ActionResult<Transfer> GetTransferByUserId(int userId)
+            else
             {
-                Transfer transfer = transferDao.GetTransfers(userId);
-                if (transfer != null)
-                {
-                    return transfer;
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            [HttpGet]
-            public ActionResult<Transfer> GetTransferStatusByTransferStatusId(int transferStatusId)
-            {
-                Transfer transfer = transferDao.GetTransferStatus(transferStatusId);
-                if (transfer == null)
-                {
-                    return NotFound("Transfer Status Id is invalid");
-                }
-                return transferDao.GetTransfers(transferStatusId);
+                return NotFound();
             }
         }
+        [HttpGet]
+        public ActionResult<Transfer> GetTransferStatusByTransferStatusId(int transferStatusId)
+        {
+            Transfer transfer = transferDao.GetTransferStatus(transferStatusId);
+            if (transfer == null)
+            {
+                return NotFound("Transfer Status Id is invalid");
+            }
+            return transferDao.GetTransfers(transferStatusId);
+        }
     }
-
-}
 }
