@@ -54,7 +54,9 @@ namespace TenmoServer
             services.AddSingleton<ITokenGenerator>(tk => new JwtGenerator(Configuration["JwtSecret"]));
             services.AddSingleton<IPasswordHasher>(ph => new PasswordHasher());
             services.AddTransient<IUserDao>(m => new UserSqlDao(connectionString));
-            services.AddTransient<IAccountsDao>(m => new AccountsSqlDao(connectionString));
+            services.AddTransient<IAccountsDao>(a => new AccountsSqlDao(connectionString));
+            services.AddTransient<ITransferDao>(t => new TransferSqlDao(connectionString));
+
 
         }
 
