@@ -87,7 +87,7 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    UserService.GetUserId();
+
                 }
                 else if (menuSelection == 2)
                 {
