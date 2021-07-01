@@ -30,14 +30,16 @@ namespace TenmoServer.Controllers
         public ActionResult<Transfer> NewSendTransfer(string toUser, decimal amount)
         {
             //CREATE SEND             From_User           to_user amount  send_id
-            transferDao.StoreTransfer(User.Identity.Name, toUser, amount, 1);
+            Transfer transfer = transferDao.StoreTransfer(User.Identity.Name, toUser, amount, 1);
+            return transfer;
         }
 
         [HttpPost("request")]
         public ActionResult<Transfer> NewRequestTransfer(string fromUser, decimal amount)
         {
             //CREATE SEND             From_User           to_user amount  request_id
-            transferDao.StoreTransfer(fromUser, User.Identity.Name, amount, 2);
+            Transfer transfer = transferDao.StoreTransfer(fromUser, User.Identity.Name, amount, 2);
+            return transfer;
         }
 
 >>>>>>> f96d1544e6462f55cda597f2339ffa47847c5cf4
