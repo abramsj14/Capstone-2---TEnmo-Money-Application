@@ -62,11 +62,12 @@ namespace TenmoServer.DAO
         }
 
         
-        private void StoreTransfer(string accountFrom, string accountTo, decimal amount, int transferTypeId)
+        public Transfer StoreTransfer(string accountFrom, string accountTo, decimal amount, int transferTypeId)
         {
             int accountFromId = 0;
             int accountToId = 0;
-            
+            int newTransferId = 0;
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlCommand cmd = new SqlCommand("SELECT accounts.user_id FROM accounts JOIN users ON users.user_id = accounts.user_id WHERE users.username = @account_from;", conn);
@@ -96,16 +97,20 @@ namespace TenmoServer.DAO
             }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
-            {                               
+            {               
+                
                 conn.Open();
 
-                SqlCommand cmd = new SqlCommand("INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);",conn);
+                SqlCommand cmd = new SqlCommand("INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) " + "OUTPUT INSERTED.transfer_id " + "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);",conn);
                 cmd.Parameters.AddWithValue("@transfer_type_id", transferTypeId);
                 cmd.Parameters.AddWithValue("@transfer_status_id", 1);
                 cmd.Parameters.AddWithValue("@account_from", accountFromId);
                 cmd.Parameters.AddWithValue("@account_to", accountToId);
-                cmd.Parameters.AddWithValue("@ammount", amount);               
+                cmd.Parameters.AddWithValue("@ammount", amount);
+                newTransferId = Convert.ToInt32(cmd.ExecuteScalar());
             }
+
+            return GetTransfers(newTransferId);
         }
         private Transfer CreateTransferFromReader(SqlDataReader reader)
         {
