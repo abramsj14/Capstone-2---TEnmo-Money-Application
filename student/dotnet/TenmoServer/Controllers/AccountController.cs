@@ -29,7 +29,7 @@ namespace TenmoServer.Controllers
         [HttpGet("balance")]
         public ActionResult<decimal> RetrieveAccountBalance()
         {
-            return accountsDao.GetBalance((userDao.GetUser(User.Identity.Name)).UserId);
+            return accountsDao.GetBalance(User.Identity.Name);
         }
 
     }
