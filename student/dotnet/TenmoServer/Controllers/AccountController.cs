@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TenmoServer.DAO;
 using TenmoServer.Security;
+using TenmoServer.Models;
 
 namespace TenmoServer.Controllers
 {
@@ -16,18 +17,17 @@ namespace TenmoServer.Controllers
     {       
         public class LoginController : ControllerBase
         {
-            private readonly IAccountsDao accountsDao;         
-
+            private readonly IAccountsDao accountsDao;
+            
             public LoginController(IAccountsDao _accountsDao)
             {               
-                accountsDao = _accountsDao;
+                accountsDao = _accountsDao;               
             }
 
             [HttpGet("balance")]
-            public ActionResult<decimal> RetrieveAccountBalance(int userId)
+            public ActionResult<decimal> RetrieveAccountBalance()
             {
-                               
-                return accountsDao.GetBalance(userId);         
+                return accountsDao.GetBalance(User.Identity.Name);                
             }
         }
 
