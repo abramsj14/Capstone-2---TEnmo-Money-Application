@@ -54,6 +54,64 @@ namespace TenmoServer.DAO
             return transfer;
         }
 
+        public Transfer RequestTransfer(int userId)
+        {
+            Transfer transfer = null;
+
+                   
+        }
+
+        
+        public Transfer StoreTransfer(string accountFrom, string accountTo, decimal amount, int transferTypeId)
+        {
+            int accountFromId = 0;
+            int accountToId = 0;
+            int newTransferId = 0;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT accounts.user_id FROM accounts JOIN users ON users.user_id = accounts.user_id WHERE users.username = @account_from;", conn);
+                cmd.Parameters.AddWithValue("@account_from", accountFrom);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    accountFromId = Convert.ToInt32(reader["user_id"]);
+         
+                }            
+            }
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT accounts.user_id FROM accounts JOIN users ON users.user_id = accounts.user_id WHERE users.username = @account_to;", conn);
+                cmd.Parameters.AddWithValue("@account_to", accountTo);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    accountToId = Convert.ToInt32(reader["user_id"]);
+
+                }
+            }
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {               
+                
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand("INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) " + "OUTPUT INSERTED.transfer_id " + "VALUES (@transfer_type_id, @transfer_status_id, @account_from, @account_to, @amount);",conn);
+                cmd.Parameters.AddWithValue("@transfer_type_id", transferTypeId);
+                cmd.Parameters.AddWithValue("@transfer_status_id", 1);
+                cmd.Parameters.AddWithValue("@account_from", accountFromId);
+                cmd.Parameters.AddWithValue("@account_to", accountToId);
+                cmd.Parameters.AddWithValue("@ammount", amount);
+                newTransferId = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            return GetTransfers(newTransferId);
+        }
         private Transfer CreateTransferFromReader(SqlDataReader reader)
         {
             Transfer transfer = new Transfer();

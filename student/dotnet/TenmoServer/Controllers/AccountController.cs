@@ -16,14 +16,13 @@ namespace TenmoServer.Controllers
     [ApiController]
     [Authorize]
     public class AccountController : ControllerBase
-    {       
-        private readonly IAccountsDao accountsDao;
-        private readonly IUserDao userDao;
+    {
 
-        public AccountController(IAccountsDao _accountsDao, IUserDao _userDao)
-        {               
+        private readonly IAccountsDao accountsDao;
+
+        public AccountController(IAccountsDao _accountsDao)
+        {
             accountsDao = _accountsDao;
-            userDao = _userDao;
         }
 
         [HttpGet("balance")]
