@@ -98,7 +98,23 @@ namespace TenmoClient
                     List<Transfer> transfers = transferService.GetPastTransfers(UserService.GetUserId());
                     foreach (Transfer transfer in transfers)
                     {
-                        Console.WriteLine(transfer);
+                        Console.WriteLine();
+                        Console.WriteLine($"Transfer Id: {transfer.TransferId}");
+                        Console.WriteLine($"Account From: {transfer.AccountFrom}");
+                        Console.WriteLine($"Account To: {transfer.AccountTo}");
+                        Console.WriteLine($"Amount: {transfer.Amount}");
+                        string transferStatus = "";
+                        if(transfer.TransferStatusId == 3)
+                        {
+                            transferStatus = "Rejected";
+                        }
+                        else if(transfer.TransferStatusId == 2)
+                        {
+                            transferStatus = "Approved";
+                        }
+                        Console.WriteLine($"Transfer Status: {transferStatus}");
+                        Console.WriteLine("Transfer Type: Send");
+                        Console.WriteLine("---------------------------------------");
                     }
                 }
                 else if (menuSelection == 3)
@@ -144,7 +160,7 @@ namespace TenmoClient
             transfer.Amount = decimal.Parse(Console.ReadLine());
             transfer.AccountFrom = UserService.GetUserId();
             transfer.TransferStatusId = 2;
-            transfer.TransferTypeId = 1;
+            transfer.TransferTypeId = 2;
             return transfer;
         }
     }
