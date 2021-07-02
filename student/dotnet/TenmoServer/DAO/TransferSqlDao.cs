@@ -35,17 +35,17 @@ namespace TenmoServer.DAO
         }
 
 
-        public List<Transfer> GetTransfersByAccount(int accountId)
+        public List<Transfer> GetTransfersByUserId(int userId)
         {
-            List<Transfer> transfers = null;
+            List<Transfer> transfers = new List<Transfer>();
 
-            string sqlQuery = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfers WHERE (transfer_status_id = 2 OR transfer_status_id = 3) AND transfer_type_id = 2 AND (@account_id = account_from OR @account_id = account_to);";
+            string sqlQuery = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfers WHERE (transfer_status_id = 2 OR transfer_status_id = 3) AND transfer_type_id = 2 AND ((SELECT account_id FROM accounts WHERE user_id = @user_id) = account_from OR (SELECT account_id FROM accounts WHERE user_id = @user_id) = account_to);";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqlQuery, conn);
-                cmd.Parameters.AddWithValue("@account_id", accountId);
+                cmd.Parameters.AddWithValue("@user_id", userId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 

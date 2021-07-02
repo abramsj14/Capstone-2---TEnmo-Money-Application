@@ -11,6 +11,6 @@ namespace TenmoServer.DAO
         Transfer GetTransfers(int userId);
         Transfer GetTransferStatus(int transferStatusId);
         Transfer AddTransfer(Transfer transfer, int fromAccountId, int toAccountId);
-        List<Transfer> GetTransfersByAccount(int accountId);
+        List<Transfer> GetTransfersByUserId(int userId);
     }
 }
