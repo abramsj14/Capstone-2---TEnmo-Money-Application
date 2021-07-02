@@ -19,6 +19,7 @@ namespace TenmoServer.Controllers
         private static IAccountsDao accountsDao;
 
         public TransferController(ITransferDao _transferDao, IUserDao _userDao, IAccountsDao _accountsDao)
+
         {
             transferDao = _transferDao;
             userDao = _userDao;
@@ -37,6 +38,12 @@ namespace TenmoServer.Controllers
             return usernames;
         }
 
+        [HttpPost("send")]
+        public ActionResult<Transfer> NewSendTransfer(string toUser, decimal amount)
+        {
+            return null;
+        }
+
         [HttpPost]
         public ActionResult<Transfer> NewTransfer(Transfer transfer)
         {          
@@ -47,6 +54,13 @@ namespace TenmoServer.Controllers
                 transfer.TransferStatusId = 3;
             }
             Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
+
+            if(transfer.TransferStatusId == 2)
+            {
+                accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
+                accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
+
+            }
             return newTransfer;
         }
 
@@ -59,12 +73,12 @@ namespace TenmoServer.Controllers
             return transfer;
         }
         */
-
         [HttpGet("{accountId}")]
         public ActionResult<List<Transfer>> GetTransferByUserId(int accountId)
         {
             List<Transfer> transfers = transferDao.GetTransfersByAccount(accountId);
             if (transfers != null)
+
             {
                 return transfers;
             }
@@ -73,6 +87,7 @@ namespace TenmoServer.Controllers
                 return NotFound();
             }
         }
+
         [HttpGet]
         public ActionResult<Transfer> GetTransferStatusByTransferStatusId(int transferStatusId)
         {
