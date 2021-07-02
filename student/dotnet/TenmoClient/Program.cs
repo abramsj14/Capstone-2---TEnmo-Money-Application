@@ -95,7 +95,11 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 2)
                 {
-
+                    List<Transfer> transfers = transferService.GetPastTransfers(UserService.GetUserId());
+                    foreach (Transfer transfer in transfers)
+                    {
+                        Console.WriteLine(transfer);
+                    }
                 }
                 else if (menuSelection == 3)
                 {

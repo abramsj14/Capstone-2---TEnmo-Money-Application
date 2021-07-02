@@ -33,24 +33,5 @@ namespace TenmoClient
             return response.Data;
         }
 
-        /*
-        public List<Transfer> GetPastTransfer(string authToken, int accountId)
-        {
-            RestRequest request = new RestRequest(API_BASE_URL + accountId);
-            client.Authenticator = new JwtAuthenticator(authToken);
-            IRestResponse<decimal> response = client.Get<decimal>(request);
-
-            if (response.ResponseStatus != ResponseStatus.Completed)
-            {
-                Console.WriteLine("An error occurred communicating with the server.");               
-            }
-            else if (!response.IsSuccessful)
-            {
-                Console.WriteLine("An error message was received: ");
-            }
-
-            return response.Data;
-        }
-        */
     }
 }
