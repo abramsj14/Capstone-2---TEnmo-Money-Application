@@ -15,17 +15,13 @@ namespace TenmoServer.Controllers
     public class TransferController : ControllerBase
     {
         private static ITransferDao transferDao;
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> f96d1544e6462f55cda597f2339ffa47847c5cf4
         public TransferController(ITransferDao _transferDao)
-=======
+        { }
         private static IUserDao userDao;
-
+  
         public TransferController(ITransferDao _transferDao, IUserDao _userDao)
->>>>>>> 3558b177eebc12adfd727d5aec16a639cf88a56b
+
         {
             transferDao = _transferDao;
             userDao = _userDao;
@@ -43,15 +39,14 @@ namespace TenmoServer.Controllers
             return usernames;
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         [HttpPost("send")]
         public ActionResult<Transfer> NewSendTransfer(string toUser, decimal amount)
-=======
+        {
+            return null;
+        }
+
         [HttpPost]
         public ActionResult<Transfer> NewTransfer(Transfer transfer)
->>>>>>> 3558b177eebc12adfd727d5aec16a639cf88a56b
         {
             //CREATE SEND             From_User           to_user amount  send_id
             Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
@@ -68,19 +63,14 @@ namespace TenmoServer.Controllers
         }
         */
 
-<<<<<<< HEAD
->>>>>>> f96d1544e6462f55cda597f2339ffa47847c5cf4
         [HttpGet]
-=======
+
         [HttpGet("{userId}")]
->>>>>>> 3558b177eebc12adfd727d5aec16a639cf88a56b
+
         public ActionResult<Transfer> GetTransferByUserId(int userId)
         {
             Transfer transfer = transferDao.GetTransfers(userId);
-<<<<<<< HEAD
 
-=======
->>>>>>> f96d1544e6462f55cda597f2339ffa47847c5cf4
             if (transfer != null)
             {
                 return transfer;
@@ -90,18 +80,11 @@ namespace TenmoServer.Controllers
                 return NotFound();
             }
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> f96d1544e6462f55cda597f2339ffa47847c5cf4
         [HttpGet]
         public ActionResult<Transfer> GetTransferStatusByTransferStatusId(int transferStatusId)
         {
             Transfer transfer = transferDao.GetTransferStatus(transferStatusId);
-<<<<<<< HEAD
-
-=======
->>>>>>> f96d1544e6462f55cda597f2339ffa47847c5cf4
             if (transfer == null)
             {
                 return NotFound("Transfer Status Id is invalid");

@@ -19,4 +19,11 @@
         public string Username { get; set; }
         public string Password { get; set; }
     }
+
+    public class ApiBalance
+    {
+        public int AccountId { get; set; }
+        public int UserId { get; set; }
+        public decimal Balance { get; set; }
+    }
 }
