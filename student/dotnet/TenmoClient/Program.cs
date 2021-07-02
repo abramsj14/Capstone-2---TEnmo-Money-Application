@@ -9,6 +9,8 @@ namespace TenmoClient
         private static readonly ConsoleService consoleService = new ConsoleService();
         private static readonly AuthService authService = new AuthService();
         private static readonly AccountService accountService = new AccountService();
+        private static readonly TransferService transferService = new TransferService();
+
 
         static void Main(string[] args)
         {
@@ -37,7 +39,7 @@ namespace TenmoClient
                         ApiUser user = authService.Login(loginUser);
                         if (user != null)
                         {
-                            UserService.SetLogin(user);                          
+                            UserService.SetLogin(user);
                         }
                     }
                 }
@@ -67,8 +69,6 @@ namespace TenmoClient
 
         private static void MenuSelection()
         {
-            Console.WriteLine("Enter Your Giant Unreadable Token That Might Have Benn Visisble at Some Point");
-            string authToken = Console.ReadLine();
             int menuSelection = -1;
             while (menuSelection != 0)
             {
@@ -90,20 +90,20 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    decimal balance = accountService.GetBalance(authToken);
-                    Console.WriteLine($"${balance}");
+                    decimal balance = accountService.GetBalance();
+                    
                 }
                 else if (menuSelection == 2)
                 {
-                    
+
                 }
                 else if (menuSelection == 3)
                 {
-                    
+
                 }
                 else if (menuSelection == 4)
                 {
-
+                    //transferService.CreateSendTransfer(transfer, )
                 }
                 else if (menuSelection == 5)
                 {
