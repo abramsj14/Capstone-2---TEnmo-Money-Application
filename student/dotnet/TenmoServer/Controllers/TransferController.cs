@@ -50,6 +50,8 @@ namespace TenmoServer.Controllers
 
             if(transfer.TransferStatusId == 2)
             {
+                accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
+                accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
 
             }
             return newTransfer;
