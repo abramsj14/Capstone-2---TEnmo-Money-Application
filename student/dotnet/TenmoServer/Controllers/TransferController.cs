@@ -15,9 +15,24 @@ namespace TenmoServer.Controllers
     public class TransferController : ControllerBase
     {
         private static ITransferDao transferDao;
-        public TransferController(ITransferDao _transferDao)
+        private static IUserDao userDao;
+
+        public TransferController(ITransferDao _transferDao, IUserDao _userDao)
         {
             transferDao = _transferDao;
+            userDao = _userDao;
+        }
+
+        [HttpGet("users")]
+        public ActionResult<List<string>> FetchUsers()
+        {
+            List<User> users = userDao.GetUsers();
+            List<string> usernames = new List<string>();
+            foreach(User user in users)
+            {
+                usernames.Add(user.Username);
+            }
+            return usernames;
         }
 
         [HttpPost]
