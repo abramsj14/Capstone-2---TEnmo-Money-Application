@@ -85,7 +85,8 @@ namespace TenmoServer.DAO
 
                         SqlCommand cmd = new SqlCommand("UPDATE accounts SET balance = @balance WHERE @account_id = account_id", conn);
                         cmd.Parameters.AddWithValue("@account_id", accountId);
-                        cmd.Parameters.AddWithValue("@balance", newBalance);                
+                        cmd.Parameters.AddWithValue("@balance", newBalance);
+                        cmd.ExecuteNonQuery();
                     }
                 }
                 catch (SqlException)
@@ -109,7 +110,7 @@ namespace TenmoServer.DAO
                     SqlCommand cmd = new SqlCommand("UPDATE accounts SET balance = @balance WHERE @account_id = account_id", conn);
                     cmd.Parameters.AddWithValue("@account_id", accountId);
                     cmd.Parameters.AddWithValue("@balance", newBalance);
-
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (SqlException)
