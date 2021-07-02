@@ -134,12 +134,13 @@ namespace TenmoClient
             {
                 Console.WriteLine(user);
             }
-            User userToSendTo = transferService.ReturnAUser();
+            User userToSendTo = transferService.ReturnAUser(Console.ReadLine());
             transfer.AccountTo = userToSendTo.UserId;
             Console.WriteLine("How much would you like to send?: ");
             transfer.Amount = decimal.Parse(Console.ReadLine());
             transfer.AccountFrom = UserService.GetUserId();
             transfer.TransferStatusId = 2;
+            transfer.TransferTypeId = 1;
             return transfer;
         }
     }
