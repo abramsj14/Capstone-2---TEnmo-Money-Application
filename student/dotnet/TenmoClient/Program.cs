@@ -91,7 +91,7 @@ namespace TenmoClient
                 else if (menuSelection == 1)
                 {
                     decimal balance = accountService.GetBalance();
-                    
+                    Console.WriteLine($"${balance}");
                 }
                 else if (menuSelection == 2)
                 {
@@ -103,7 +103,9 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 4)
                 {
-                    //transferService.CreateSendTransfer(transfer, )
+                    Transfer transfer = CreateTransferObject();
+                    transferService.CreateSendTransfer(transfer);
+                    
                 }
                 else if (menuSelection == 5)
                 {
@@ -121,6 +123,24 @@ namespace TenmoClient
                     Environment.Exit(0);
                 }
             }
+        }
+
+        private static Transfer CreateTransferObject()
+        {
+            Transfer transfer = new Transfer();
+            Console.WriteLine("Select a user to send to: ");
+            List<string> users = transferService.ReturnAllUsers();
+            foreach(string user in users)
+            {
+                Console.WriteLine(user);
+            }
+            User userToSendTo = transferService.ReturnAUser();
+            transfer.AccountTo = userToSendTo.UserId;
+            Console.WriteLine("How much would you like to send?: ");
+            transfer.Amount = decimal.Parse(Console.ReadLine());
+            transfer.AccountFrom = UserService.GetUserId();
+            transfer.TransferStatusId = 2;
+            return transfer;
         }
     }
 }

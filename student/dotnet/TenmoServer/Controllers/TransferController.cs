@@ -25,6 +25,13 @@ namespace TenmoServer.Controllers
             accountsDao = _accountsDao;
         }
 
+        [HttpGet("user")]
+        public ActionResult<User> FetchUsers(string userName)
+        {
+            User user = userDao.GetUser(userName);
+            return user;
+        }
+
         [HttpGet("users")]
         public ActionResult<List<string>> FetchUsers()
         {
