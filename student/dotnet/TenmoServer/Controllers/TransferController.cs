@@ -16,11 +16,13 @@ namespace TenmoServer.Controllers
     {
         private static ITransferDao transferDao;
         private static IUserDao userDao;
+        private static IAccountsDao accountsDao;
 
-        public TransferController(ITransferDao _transferDao, IUserDao _userDao)
+        public TransferController(ITransferDao _transferDao, IUserDao _userDao, IAccountsDao _accountsDao)
         {
             transferDao = _transferDao;
             userDao = _userDao;
+            accountsDao = _accountsDao;
         }
 
         [HttpGet("users")]
@@ -39,6 +41,10 @@ namespace TenmoServer.Controllers
         public ActionResult<Transfer> NewTransfer(Transfer transfer)
         {
             //CREATE SEND             From_User           to_user amount  send_id
+            if (accountsDao.GetBalance(userDao.GetUserName(transfer.AccountFrom)) < transfer.Amount)
+            {
+                transfer.TransferStatusId = 3;
+            }
             Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
             return newTransfer;
         }
