@@ -15,6 +15,7 @@ namespace TenmoServer.Controllers
     public class TransferController : ControllerBase
     {
         private static ITransferDao transferDao;
+<<<<<<< HEAD
 
         public TransferController(ITransferDao _transferDao)
         { }
@@ -22,9 +23,16 @@ namespace TenmoServer.Controllers
   
         public TransferController(ITransferDao _transferDao, IUserDao _userDao)
 
+=======
+        private static IUserDao userDao;
+        private static IAccountsDao accountsDao;
+
+        public TransferController(ITransferDao _transferDao, IUserDao _userDao, IAccountsDao _accountsDao)
+>>>>>>> ad83b77856acee52041e9cc23d9a33d063ebbe1c
         {
             transferDao = _transferDao;
             userDao = _userDao;
+            accountsDao = _accountsDao;
         }
 
         [HttpGet("users")]
@@ -47,9 +55,21 @@ namespace TenmoServer.Controllers
 
         [HttpPost]
         public ActionResult<Transfer> NewTransfer(Transfer transfer)
-        {
+        {          
+    
             //CREATE SEND             From_User           to_user amount  send_id
+            if (accountsDao.GetBalance(userDao.GetUserName(transfer.AccountFrom)) < transfer.Amount)
+            {
+                transfer.TransferStatusId = 3;
+            }
             Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
+
+            if(transfer.TransferStatusId == 2)
+            {
+                accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
+                accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
+
+            }
             return newTransfer;
         }
 
@@ -63,6 +83,7 @@ namespace TenmoServer.Controllers
         }
         */
 
+<<<<<<< HEAD
         [HttpGet]
 
         [HttpGet("{userId}")]
@@ -72,8 +93,15 @@ namespace TenmoServer.Controllers
             Transfer transfer = transferDao.GetTransfers(userId);
 
             if (transfer != null)
+=======
+        [HttpGet("{accountId}")]
+        public ActionResult<List<Transfer>> GetTransferByUserId(int accountId)
+        {
+            List<Transfer> transfers = transferDao.GetTransfersByAccount(accountId);
+            if (transfers != null)
+>>>>>>> ad83b77856acee52041e9cc23d9a33d063ebbe1c
             {
-                return transfer;
+                return transfers;
             }
             else
             {
