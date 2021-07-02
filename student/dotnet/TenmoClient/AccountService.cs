@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TenmoClient.Models;
+using RestSharp.Authenticators;
 
 namespace TenmoClient
 {
@@ -11,10 +12,12 @@ namespace TenmoClient
         private readonly static string API_BASE_URL = "https://localhost:44315/";
         private readonly IRestClient client = new RestClient();
 
+
         //get balance
-        public decimal GetBalance()
+        public decimal GetBalance(string authToken)
         {
             RestRequest request = new RestRequest(API_BASE_URL + "account/balance");
+            client.Authenticator = new JwtAuthenticator(authToken);
             IRestResponse<decimal> response = client.Get<decimal>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed)
@@ -26,10 +29,7 @@ namespace TenmoClient
             {
                 Console.WriteLine("An error message was received: ");
             }
-            else
-            {
-                Console.WriteLine("An error response was received from the server. The status code is " + (int)response.StatusCode);
-            }
+          
             return response.Data;
         }
     }
