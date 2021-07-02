@@ -10,6 +10,6 @@ namespace TenmoServer.DAO
     {
         Transfer GetTransfers(int userId);
         Transfer GetTransferStatus(int transferStatusId);
-        Transfer StoreTransfer(string accountFrom, string accountTo, decimal amount, int transferTypeId);
+        Transfer AddTransfer(Transfer transfer, int fromAccountId, int toAccountId);
     }
 }
