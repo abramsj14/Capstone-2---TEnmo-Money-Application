@@ -19,23 +19,43 @@ namespace TenmoServer.DAO
         public Transfer GetTransfers(int transferId)
         {
             Transfer transfer = null;
-
             string sqlQuery = "SELECT * FROM transfers WHERE transfer_id = @transfer_id;";
-
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqlQuery, conn);
                 cmd.Parameters.AddWithValue("@transfer_id", transferId);
-
                 SqlDataReader reader = cmd.ExecuteReader();
-
                 if (reader.Read())
                 {
                     transfer = CreateTransferFromReader(reader);
                 }
             }
             return transfer;
+        }
+
+
+        public List<Transfer> GetTransfersByAccount(int accountId)
+        {
+            List<Transfer> transfers = null;
+
+            string sqlQuery = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfers WHERE (transfer_status_id = 2 OR transfer_status_id = 3) AND transfer_type_id = 2 AND (@account_id = account_from OR @account_id = account_to);";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sqlQuery, conn);
+                cmd.Parameters.AddWithValue("@account_id", accountId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                   Transfer transfer = CreateTransferFromReader(reader);
+                    transfers.Add(transfer);
+                }
+            }
+            return transfers;
         }
 
         public Transfer GetTransferStatus(int transferStatusId)
@@ -59,13 +79,6 @@ namespace TenmoServer.DAO
             }
             return transfer;
         }
-
-        //public Transfer RequestTransfer(int userId)
-        //{
-        //    Transfer transfer = null;
-
-                   
-        //}
 
         
         public Transfer AddTransfer(Transfer transfer, int fromAccountId, int toAccountId)
