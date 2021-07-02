@@ -9,7 +9,7 @@ using TenmoServer.Models;
 
 namespace TenmoServer.Controllers
 {
-    [Route("transfers/")]
+    [Route("transfer/")]
     [ApiController]
     [Authorize]
     public class TransferController : ControllerBase
@@ -20,14 +20,15 @@ namespace TenmoServer.Controllers
             transferDao = _transferDao;
         }
 
-        [HttpPost("send")]
-        public ActionResult<Transfer> NewSendTransfer(string toUser, decimal amount)
+        [HttpPost]
+        public ActionResult<Transfer> NewTransfer(Transfer transfer)
         {
             //CREATE SEND             From_User           to_user amount  send_id
-            Transfer transfer = transferDao.StoreTransfer(User.Identity.Name, toUser, amount, 1);
-            return transfer;
+            Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
+            return newTransfer;
         }
 
+        /*
         [HttpPost("request")]
         public ActionResult<Transfer> NewRequestTransfer(string fromUser, decimal amount)
         {
@@ -35,8 +36,9 @@ namespace TenmoServer.Controllers
             Transfer transfer = transferDao.StoreTransfer(fromUser, User.Identity.Name, amount, 2);
             return transfer;
         }
+        */
 
-        [HttpGet]
+        [HttpGet("{userId}")]
         public ActionResult<Transfer> GetTransferByUserId(int userId)
         {
             Transfer transfer = transferDao.GetTransfers(userId);
