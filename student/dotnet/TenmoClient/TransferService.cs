@@ -31,9 +31,9 @@ namespace TenmoClient
             return response.Data;
         }
 
-        public User ReturnAUser()
+        public User ReturnAUser(string userName)
         {
-            RestRequest request = new RestRequest(API_BASE_URL + "transfer/user");
+            RestRequest request = new RestRequest(API_BASE_URL + $"transfer/user?username={userName}");
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
             IRestResponse<User> response = client.Get<User>(request);
 
@@ -55,6 +55,7 @@ namespace TenmoClient
         {
             RestRequest request = new RestRequest(API_BASE_URL + "transfer");
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+            request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Get<Transfer>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed)
