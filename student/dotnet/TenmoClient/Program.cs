@@ -37,7 +37,7 @@ namespace TenmoClient
                         ApiUser user = authService.Login(loginUser);
                         if (user != null)
                         {
-                            UserService.SetLogin(user);
+                            UserService.SetLogin(user);                          
                         }
                     }
                 }
@@ -67,6 +67,8 @@ namespace TenmoClient
 
         private static void MenuSelection()
         {
+            Console.WriteLine("Enter Your Giant Unreadable Token That Might Have Benn Visisble at Some Point");
+            string authToken = Console.ReadLine();
             int menuSelection = -1;
             while (menuSelection != 0)
             {
@@ -88,15 +90,16 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 1)
                 {
-                    decimal balance = accountService.GetBalance();
+                    decimal balance = accountService.GetBalance(authToken);
+                    Console.WriteLine($"${balance}");
                 }
                 else if (menuSelection == 2)
                 {
-
+                    
                 }
                 else if (menuSelection == 3)
                 {
-
+                    
                 }
                 else if (menuSelection == 4)
                 {
