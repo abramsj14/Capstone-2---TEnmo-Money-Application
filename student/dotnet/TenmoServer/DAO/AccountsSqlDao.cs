@@ -45,6 +45,32 @@ namespace TenmoServer.DAO
             return 0M;
         }
 
+        public void AddBalanceToSender(int fromAccountId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    SqlCommand cmd = new SqlCommand("SELECT balance FROM accounts WHERE @account_from = account_from", conn);
+                    cmd.Parameters.AddWithValue("@account_from", fromAccountId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        return Convert.ToDecimal(reader["balance"]);
+                    }
+                }
+            }
+            catch (SqlException)
+            {
+                throw;
+            }
+
+            return 0M;
+        }
+
         private Account GetAccount(SqlDataReader reader)
         {
             Account account = new Account()
