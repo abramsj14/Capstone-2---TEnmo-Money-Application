@@ -14,10 +14,10 @@ namespace TenmoClient
 
 
         //get balance
-        public decimal GetBalance(string authToken)
+        public decimal GetBalance()
         {
             RestRequest request = new RestRequest(API_BASE_URL + "account/balance");
-            client.Authenticator = new JwtAuthenticator(authToken);
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
             IRestResponse<decimal> response = client.Get<decimal>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed)
@@ -33,6 +33,7 @@ namespace TenmoClient
             return response.Data;
         }
 
+        /*
         public List<Transfer> GetPastTransfer(string authToken, int accountId)
         {
             RestRequest request = new RestRequest(API_BASE_URL + accountId);
@@ -50,5 +51,6 @@ namespace TenmoClient
 
             return response.Data;
         }
+        */
     }
 }

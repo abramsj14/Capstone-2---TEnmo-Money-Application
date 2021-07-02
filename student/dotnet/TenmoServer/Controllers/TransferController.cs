@@ -19,11 +19,17 @@ namespace TenmoServer.Controllers
         private static IAccountsDao accountsDao;
 
         public TransferController(ITransferDao _transferDao, IUserDao _userDao, IAccountsDao _accountsDao)
-
         {
             transferDao = _transferDao;
             userDao = _userDao;
             accountsDao = _accountsDao;
+        }
+
+        [HttpGet("user")]
+        public ActionResult<User> FetchUsers(string userName)
+        {
+            User user = userDao.GetUser(userName);
+            return user;
         }
 
         [HttpGet("users")]
@@ -38,17 +44,9 @@ namespace TenmoServer.Controllers
             return usernames;
         }
 
-        [HttpPost("send")]
-        public ActionResult<Transfer> NewSendTransfer(string toUser, decimal amount)
-        {
-            return null;
-        }
-
         [HttpPost]
         public ActionResult<Transfer> NewTransfer(Transfer transfer)
         {          
-    
-            //CREATE SEND             From_User           to_user amount  send_id
             if (accountsDao.GetBalance(userDao.GetUserName(transfer.AccountFrom)) < transfer.Amount)
             {
                 transfer.TransferStatusId = 3;
@@ -64,21 +62,11 @@ namespace TenmoServer.Controllers
             return newTransfer;
         }
 
-        /*
-        [HttpPost("request")]
-        public ActionResult<Transfer> NewRequestTransfer(string fromUser, decimal amount)
-        {
-            //CREATE SEND             From_User           to_user amount  request_id
-            Transfer transfer = transferDao.StoreTransfer(fromUser, User.Identity.Name, amount, 2);
-            return transfer;
-        }
-        */
         [HttpGet("{accountId}")]
         public ActionResult<List<Transfer>> GetTransfersByAccountId(int accountId)
         {
             List<Transfer> transfers = transferDao.GetTransfersByAccount(accountId);
             if (transfers != null)
-
             {
                 return transfers;
             }
