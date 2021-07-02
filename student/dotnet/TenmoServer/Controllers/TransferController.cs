@@ -39,7 +39,8 @@ namespace TenmoServer.Controllers
 
         [HttpPost]
         public ActionResult<Transfer> NewTransfer(Transfer transfer)
-        {
+        {          
+    
             //CREATE SEND             From_User           to_user amount  send_id
             if (accountsDao.GetBalance(userDao.GetUserName(transfer.AccountFrom)) < transfer.Amount)
             {
@@ -59,13 +60,13 @@ namespace TenmoServer.Controllers
         }
         */
 
-        [HttpGet("{userId}")]
-        public ActionResult<Transfer> GetTransferByUserId(int userId)
+        [HttpGet("{accountId}")]
+        public ActionResult<List<Transfer>> GetTransferByUserId(int accountId)
         {
-            Transfer transfer = transferDao.GetTransfers(userId);
-            if (transfer != null)
+            List<Transfer> transfers = transferDao.GetTransfersByAccount(accountId);
+            if (transfers != null)
             {
-                return transfer;
+                return transfers;
             }
             else
             {
