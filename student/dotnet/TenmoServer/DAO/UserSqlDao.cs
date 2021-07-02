@@ -75,7 +75,7 @@ namespace TenmoServer.DAO
 
         public string GetUserName(int userId)
         {
-            int userIdToReturn = 0;
+            string userNameToReturn = "";
 
             try
             {
@@ -89,7 +89,7 @@ namespace TenmoServer.DAO
 
                     if (reader.Read())
                     {
-                        userIdToReturn = Convert.ToInt32(reader["username"]);
+                        userNameToReturn = Convert.ToString(reader["username"]);
                     }
                 }
             }
@@ -98,7 +98,7 @@ namespace TenmoServer.DAO
                 throw;
             }
 
-            return userIdToReturn;
+            return userNameToReturn;
         }
 
         public List<User> GetUsers()
