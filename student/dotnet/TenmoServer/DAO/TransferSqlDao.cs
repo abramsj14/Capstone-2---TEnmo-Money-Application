@@ -54,13 +54,13 @@ namespace TenmoServer.DAO
             return transfer;
         }
 
-        public Transfer RequestTransfer(int userId)
+        /*public Transfer RequestTransfer(int userId)
         {
             Transfer transfer = null;
 
                    
         }
-
+        */
         
         public Transfer StoreTransfer(string accountFrom, string accountTo, decimal amount, int transferTypeId)
         {
