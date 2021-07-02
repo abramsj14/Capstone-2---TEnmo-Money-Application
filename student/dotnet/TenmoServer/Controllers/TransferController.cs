@@ -15,20 +15,11 @@ namespace TenmoServer.Controllers
     public class TransferController : ControllerBase
     {
         private static ITransferDao transferDao;
-<<<<<<< HEAD
-
-        public TransferController(ITransferDao _transferDao)
-        { }
-        private static IUserDao userDao;
-  
-        public TransferController(ITransferDao _transferDao, IUserDao _userDao)
-
-=======
         private static IUserDao userDao;
         private static IAccountsDao accountsDao;
 
         public TransferController(ITransferDao _transferDao, IUserDao _userDao, IAccountsDao _accountsDao)
->>>>>>> ad83b77856acee52041e9cc23d9a33d063ebbe1c
+
         {
             transferDao = _transferDao;
             userDao = _userDao;
@@ -82,24 +73,12 @@ namespace TenmoServer.Controllers
             return transfer;
         }
         */
-
-<<<<<<< HEAD
-        [HttpGet]
-
-        [HttpGet("{userId}")]
-
-        public ActionResult<Transfer> GetTransferByUserId(int userId)
-        {
-            Transfer transfer = transferDao.GetTransfers(userId);
-
-            if (transfer != null)
-=======
         [HttpGet("{accountId}")]
         public ActionResult<List<Transfer>> GetTransferByUserId(int accountId)
         {
             List<Transfer> transfers = transferDao.GetTransfersByAccount(accountId);
             if (transfers != null)
->>>>>>> ad83b77856acee52041e9cc23d9a33d063ebbe1c
+
             {
                 return transfers;
             }
