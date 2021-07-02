@@ -47,6 +47,13 @@ namespace TenmoServer.Controllers
                 transfer.TransferStatusId = 3;
             }
             Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
+
+            if(transfer.TransferStatusId == 2)
+            {
+                accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
+                accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
+
+            }
             return newTransfer;
         }
 
