@@ -8,9 +8,9 @@ namespace TenmoServer.DAO
 {
     public interface ITransferDao
     {
-        Transfer GetTransfers(int userId);
-        Transfer GetTransferStatus(int transferStatusId);
+        Transfer GetTransfers(int transferId);     
         Transfer AddTransfer(Transfer transfer, int fromAccountId, int toAccountId);
         List<Transfer> GetTransfersByUserId(int userId);
+        List<Transfer> GetPendingRequestsUserId(int userId);
     }
 }
