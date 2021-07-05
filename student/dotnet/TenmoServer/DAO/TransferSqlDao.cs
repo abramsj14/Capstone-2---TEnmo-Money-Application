@@ -115,12 +115,10 @@ namespace TenmoServer.DAO
             {
                 conn.Open();
 
-                SqlCommand cmd = new SqlCommand("UPDATE transfers SET transfer_type_id = @transfer_type_id, transfer_status_id = @transfer_status_id, account_from = @account_from, account_to = @account_to  WHERE transfer_id = @transfer_id;", conn);
+                SqlCommand cmd = new SqlCommand("UPDATE transfers SET transfer_type_id = (SELECT transfer_type_id FROM transfer_types WHERE transfer_type_id = @transfer_type_id), transfer_status_id = (SELECT transfer_status_id FROM transfer_statuses WHERE transfer_status_id = @transfer_status_id) WHERE transfer_id = @trasfer_id;", conn);
                 cmd.Parameters.AddWithValue("@transfer_id", transfer.TransferId);
                 cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
-                cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
-                cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
-                cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);              
+                cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);                          
 
             }
             return transfer;
