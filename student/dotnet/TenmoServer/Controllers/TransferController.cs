@@ -61,6 +61,23 @@ namespace TenmoServer.Controllers
             return newTransfer;
         }
 
+        [HttpPut]
+        public ActionResult<Transfer> ApproveOrDenyRequest(Transfer transfer)
+        {
+            if (accountsDao.GetBalanceFromAccount(transfer.AccountFrom) < transfer.Amount)
+            {
+                transfer.TransferStatusId = 3;
+            }
+            Transfer newTransfer = transferDao.UpdateTransfer(transfer);
+
+            if (transfer.TransferStatusId == 2)
+            {
+                accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
+                accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
+            }
+            return newTransfer;
+        }
+
         [HttpGet("{userId}")]
         public ActionResult<List<Transfer>> GetTransfersByUserId(int userId)
         {

@@ -216,7 +216,7 @@ namespace TenmoClient
                     Transfer transferToApprove = transferService.GetTransfer(newTransferId);
                     transferToApprove.TransferStatusId = 2;
                     transferToApprove.TransferTypeId = 2;
-                    transferService.CreateTransfer(transferToApprove);
+                    transferService.UpdateTransfer(transferToApprove);
                     Console.WriteLine($"Transfer {transferId} Approved");
                 }
                 else if(selection == 2)
@@ -226,7 +226,7 @@ namespace TenmoClient
                     int newTransferId = Convert.ToInt32(transferId);
                     Transfer transferToReject = transferService.GetTransfer(newTransferId);
                     transferToReject.TransferStatusId = 3;                  
-                    transferService.CreateTransfer(transferToReject);
+                    transferService.UpdateTransfer(transferToReject);
                     Console.WriteLine($"Transfer {transferId} Rejected");
                 }
             }

@@ -109,6 +109,24 @@ namespace TenmoServer.DAO
             return GetTransfers(newTransferId);
         }
 
+        public Transfer UpdateTransfer(Transfer transfer)
+        {           
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand("UPDATE transfers SET transfer_type_id = @transfer_type_id, transfer_status_id = @transfer_status_id, account_from = @account_from, account_to = @account_to  WHERE transfer_id = @transfer_id;", conn);
+                cmd.Parameters.AddWithValue("@transfer_id", transfer.TransferId);
+                cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
+                cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
+                cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+                cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);              
+
+            }
+            return transfer;
+        }
+
+
         private Transfer CreateTransferFromReader(SqlDataReader reader)
         {
             Transfer transfer = new Transfer();
