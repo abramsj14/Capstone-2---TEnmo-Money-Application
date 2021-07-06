@@ -19,7 +19,7 @@ namespace TenmoServer.DAO
         public Transfer GetTransfers(int transferId)
         {
             Transfer transfer = null;
-            string sqlQuery = "SELECT * FROM transfers WHERE transfer_id = @transfer_id;";
+            string sqlQuery = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfers WHERE transfer_id = @transfer_id;";
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -58,29 +58,29 @@ namespace TenmoServer.DAO
             return transfers;
         }
 
-        public Transfer GetTransferStatus(int transferStatusId)
+        public List<Transfer> GetPendingRequestsUserId(int userId)
         {
-            Transfer transfer = null;
+            List<Transfer> transfers = new List<Transfer>();
 
-            string sqlQuery = "SELECT transfer_status_id FROM transfers WHERE transfer_status_id = @transfer_status_id";
+            string sqlQuery = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfers WHERE transfer_status_id = 1 AND ((SELECT account_id FROM accounts WHERE user_id = @user_id) = account_from);";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sqlQuery, conn);
-                cmd.Parameters.AddWithValue("@transfer_status_id", transferStatusId);
+                cmd.Parameters.AddWithValue("@user_id", userId);
 
                 SqlDataReader reader = cmd.ExecuteReader();
 
-                if (reader.Read())
+                while (reader.Read())
                 {
-                    transfer = CreateTransferFromReader(reader);
+                    Transfer transfer = CreateTransferFromReader(reader);
+                    transfers.Add(transfer);
                 }
             }
-            return transfer;
+            return transfers;
         }
-
-        
+            
         public Transfer AddTransfer(Transfer transfer, int fromAccountId, int toAccountId)
         {
             int newTransferId = 0;
@@ -108,6 +108,25 @@ namespace TenmoServer.DAO
             }
             return GetTransfers(newTransferId);
         }
+
+        public Transfer UpdateTransfer(Transfer transfer)
+        {           
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand("UPDATE transfers SET transfer_type_id = (SELECT transfer_type_id FROM transfer_types WHERE transfer_type_id = @transfer_type_id), transfer_status_id = (SELECT transfer_status_id FROM transfer_statuses WHERE transfer_status_id = @transfer_status_id),account_from = (SELECT account_id FROM accounts WHERE user_id = @account_from), account_to = (SELECT account_id FROM accounts WHERE user_id = @account_to), amount = @amount  WHERE transfer_id = @transfer_id;", conn);
+                cmd.Parameters.AddWithValue("@transfer_id", transfer.TransferId);
+                cmd.Parameters.AddWithValue("@transfer_type_id", transfer.TransferTypeId);
+                cmd.Parameters.AddWithValue("@transfer_status_id", transfer.TransferStatusId);
+                cmd.Parameters.AddWithValue("@account_from", transfer.AccountFrom);
+                cmd.Parameters.AddWithValue("@account_to", transfer.AccountTo);
+                cmd.Parameters.AddWithValue("@amount", transfer.Amount);
+
+            }
+            return transfer;
+        }
+
 
         private Transfer CreateTransferFromReader(SqlDataReader reader)
         {

@@ -119,16 +119,18 @@ namespace TenmoClient
                 }
                 else if (menuSelection == 3)
                 {
-
+                    ApproveOrDeny();
                 }
                 else if (menuSelection == 4)
                 {
                     Transfer transfer = CreateTransferObject();
-                    transferService.CreateSendTransfer(transfer);
+                    transferService.CreateTransfer(transfer);
                     
                 }
                 else if (menuSelection == 5)
                 {
+                    Transfer transfer = CreateRequestObject();
+                    transferService.CreateTransfer(transfer);
 
                 }
                 else if (menuSelection == 6)
@@ -163,5 +165,73 @@ namespace TenmoClient
             transfer.TransferTypeId = 2;
             return transfer;
         }
+
+        private static Transfer CreateRequestObject()
+        {
+            Transfer transfer = new Transfer();
+            Console.WriteLine("Select a user to request TE Bucks from: ");
+            List<string> users = transferService.ReturnAllUsers();
+            foreach (string user in users)
+            {
+                Console.WriteLine(user);
+            }
+            User userToRequestFrom= transferService.ReturnAUser(Console.ReadLine());
+            transfer.AccountFrom = userToRequestFrom.UserId;
+            Console.WriteLine("How much would you like to request?: ");
+            transfer.Amount = decimal.Parse(Console.ReadLine());
+            transfer.AccountTo = UserService.GetUserId();
+            transfer.TransferStatusId = 1;
+            transfer.TransferTypeId = 1;
+            return transfer;
+        }
+
+        private static void ApproveOrDeny()
+        {
+            List<Transfer> transfers = transferService.GetPendingRequests(UserService.GetUserId());
+            foreach (Transfer transfer in transfers)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Transfer Id: {transfer.TransferId}");
+                Console.WriteLine($"Account From: {transfer.AccountFrom}");
+                Console.WriteLine($"Account To: {transfer.AccountTo}");
+                Console.WriteLine($"Amount: {transfer.Amount}");
+                Console.WriteLine($"Transfer Status: Pending");
+                Console.WriteLine("Transfer Type: Request");
+                Console.WriteLine("---------------------------------------");
+                Console.WriteLine();
+            }
+
+            int selection = 0;
+            while(selection != 3)
+            {
+                Console.WriteLine("1: Approve a request");
+                Console.WriteLine("2: Reject a request");
+                Console.WriteLine("3: Exit request menu");
+                selection = Convert.ToInt32(Console.ReadLine());
+                if (selection == 1)
+                {
+                    Console.WriteLine("Please enter the transfer ID of the request you would like to approve");
+                    string transferId = Console.ReadLine();
+                    int newTransferId = Convert.ToInt32(transferId);
+                    Transfer transferToApprove = transferService.GetTransfer(newTransferId);
+                    transferToApprove.TransferStatusId = 2;
+                    transferToApprove.TransferTypeId = 2;
+                    transferService.UpdateTransfer(transferToApprove);
+                    Console.WriteLine($"Transfer {transferId} Approved");
+                }
+                else if(selection == 2)
+                {
+                    Console.WriteLine("Please enter the transfer ID of the request you would like to reject");
+                    string transferId = Console.ReadLine();
+                    int newTransferId = Convert.ToInt32(transferId);
+                    Transfer transferToReject = transferService.GetTransfer(newTransferId);
+                    transferToReject.TransferStatusId = 3;                  
+                    transferService.UpdateTransfer(transferToReject);
+                    Console.WriteLine($"Transfer {transferId} Rejected");
+                }
+            }
+  
+        }
+
     }
 }

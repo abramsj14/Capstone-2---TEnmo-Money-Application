@@ -51,13 +51,29 @@ namespace TenmoServer.Controllers
             {
                 transfer.TransferStatusId = 3;
             }
-            Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);
-
+            Transfer newTransfer = transferDao.AddTransfer(transfer, transfer.AccountFrom, transfer.AccountTo);    
+            
             if(transfer.TransferStatusId == 2)
             {
                 accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
                 accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
+            }
+            return newTransfer;
+        }
 
+        [HttpPut]
+        public ActionResult<Transfer> ApproveOrDenyRequest(Transfer transfer)
+        {
+            if (accountsDao.GetBalanceFromAccount(transfer.AccountFrom) < transfer.Amount)
+            {
+                transfer.TransferStatusId = 3;
+            }
+            Transfer newTransfer = transferDao.UpdateTransfer(transfer);
+
+            if (transfer.TransferStatusId == 2)
+            {
+                accountsDao.RemoveBalanceFromAccount(newTransfer.AccountFrom, newTransfer.Amount);
+                accountsDao.AddBalanceToAccount(newTransfer.AccountTo, newTransfer.Amount);
             }
             return newTransfer;
         }
@@ -65,7 +81,7 @@ namespace TenmoServer.Controllers
         [HttpGet("{userId}")]
         public ActionResult<List<Transfer>> GetTransfersByUserId(int userId)
         {
-            List<Transfer> transfers = transferDao.GetTransfersByUserId(userId);
+            List<Transfer> transfers = transferDao.GetTransfersByUserId(userId);          
             if (transfers != null)
             {
                 return transfers;
@@ -76,15 +92,29 @@ namespace TenmoServer.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult<Transfer> GetTransferStatusByTransferStatusId(int transferStatusId)
+        [HttpGet("request/{userId}")]
+        public ActionResult<List<Transfer>> GetPendingRequestsByUserId(int userId)
         {
-            Transfer transfer = transferDao.GetTransferStatus(transferStatusId);
+            List<Transfer> transfers = transferDao.GetPendingRequestsUserId(userId);
+            if (transfers != null)
+            {
+                return transfers;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("approveorreject/{transferId}")]
+        public ActionResult<Transfer> GetTransferByTransferId(int transferId)
+        {
+            Transfer transfer = transferDao.GetTransfers(transferId);
             if (transfer == null)
             {
                 return NotFound("Transfer Status Id is invalid");
             }
-            return transferDao.GetTransfers(transferStatusId);
+            return transferDao.GetTransfers(transferId);
         }
     }
 }

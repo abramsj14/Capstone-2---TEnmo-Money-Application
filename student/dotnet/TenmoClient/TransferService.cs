@@ -51,12 +51,33 @@ namespace TenmoClient
             return response.Data;
         }
 
-        public Transfer CreateSendTransfer(Transfer transfer)
+        public Transfer CreateTransfer(Transfer transfer)
         {
             RestRequest request = new RestRequest(API_BASE_URL + "transfer");
             client.Authenticator = new JwtAuthenticator(UserService.GetToken());
             request.AddJsonBody(transfer);
             IRestResponse<Transfer> response = client.Post<Transfer>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                Console.WriteLine("An error occurred communicating with the server.");
+                return null;
+            }
+            else if (!response.IsSuccessful)
+            {
+                Console.WriteLine("An error message was received: ");
+                return null;
+            }
+
+            return response.Data;
+        }
+
+        public Transfer UpdateTransfer(Transfer transfer)
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transfer");
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+            request.AddJsonBody(transfer);
+            IRestResponse<Transfer> response = client.Put<Transfer>(request);
 
             if (response.ResponseStatus != ResponseStatus.Completed)
             {
@@ -92,6 +113,44 @@ namespace TenmoClient
             return response.Data;
         }
 
+        public List<Transfer> GetPendingRequests(int userId)
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transfer/request/" + userId);
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+            IRestResponse<List<Transfer>> response = client.Get<List<Transfer>>(request);
 
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                Console.WriteLine("An error occurred communicating with the server.");
+                return null;
+            }
+            else if (!response.IsSuccessful)
+            {
+                Console.WriteLine("An error message was received: ");
+                return null;
+            }
+
+            return response.Data;
+        }
+
+        public Transfer GetTransfer(int transferId)
+        {
+            RestRequest request = new RestRequest(API_BASE_URL + "transfer/approveorreject/" + transferId);
+            client.Authenticator = new JwtAuthenticator(UserService.GetToken());
+            IRestResponse<Transfer> response = client.Get<Transfer>(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                Console.WriteLine("An error occurred communicating with the server.");
+                return null;
+            }
+            else if (!response.IsSuccessful)
+            {
+                Console.WriteLine("An error message was received: ");
+                return null;
+            }
+
+            return response.Data;
+        }
     }
 }
